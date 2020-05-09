@@ -1,0 +1,2 @@
+sote_gl.csv --------file containing the GL strings printed from all results
+bloom_merged.csv----file containing all read pair counts mapped during the index filtering step
