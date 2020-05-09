@@ -1,0 +1,2 @@
+*.qc filter=lfs diff=lfs merge=lfs -text
+*.gl filter=lfs diff=lfs merge=lfs -text
