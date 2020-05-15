@@ -85,8 +85,8 @@ def main():
         for i in amb_map:
             print("{}={}".format(i,amb_map[i]), file=f)
         
-    print("{} ambiguous, {} unambiguos alleles".format(ambig_allele, unambig_allele))
-    print("{} ambiguous, {} unambiguos pairs".format(ambig_pair, unambig_pair))
+    print("{} ambiguous, {} unambiguous alleles".format(ambig_allele, unambig_allele))
+    print("{} ambiguous, {} unambiguous pairs".format(ambig_pair, unambig_pair))
 
 
 
