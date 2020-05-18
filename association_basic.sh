@@ -34,16 +34,15 @@ mkdir -p results_$fields
 
 echo "preproc/${fields}field_pyhla_input.tsv"
 
-python ../PyHLA/PyHLA.py --input preproc/${fields}field_pyhla_input.tsv --covar preproc/formatted_pheno.tsv --covar-name risk_group,gender,ALL_lineage --digit $digs --assoc --test $atest --model $mdl --adjust Bonferroni --print --out results_$fields/assoc.txt 
-#--combinations DRB1,DQB1 --freq 0.01
+python ../PyHLA/PyHLA.py --input preproc/${fields}field_pyhla_input.tsv --covar preproc/formatted_pheno.tsv --covar-name risk_group,gender,ALL_lineage --digit $digs --pairwise --test $atest --model $mdl --adjust Bonferroni --print --out results_$fields/pairwise.txt 
 
-if [ ! -f results_$fields/assoc.txt ]; then
+if [ ! -f results_$fields/pairwise.txt ]; then
     echo "PyHLA was unsuccessful"
 else
     echo -e "\nsorting...\n\n"
 
-    scol=$(head -n1 results_$fields/assoc.txt | awk -v pcol=$pval '{for(i=1; i<= NF; ++i) if($i == pcol) {print i; break;}}')
-    head -n1 results_$fields/assoc.txt | tr -s " " | sed 's/^ //' | sed 's/ /\t/g' | tee results_$fields/assoc_sorted.txt
-    tail -n +2 results_$fields/assoc.txt | tr -s " " | sed 's/^ //' | sed 's/ /\t/g' | awk -v scol=$scol '{print $scol "\t" $0}' | sort -g | sed 's/^[^\t]*\t//' | tee -a results_$fields/assoc_sorted.txt
+    scol=$(head -n1 results_$fields/pairwise.txt | awk -v pcol=$pval '{for(i=1; i<= NF; ++i) if($i == pcol) {print i; break;}}')
+    head -n1 results_$fields/pairwise.txt | tr -s " " | sed 's/^ //' | sed 's/ /\t/g' | tee results_$fields/pairwise_sorted.txt
+    tail -n +2 results_$fields/pairwise.txt | tr -s " " | sed 's/^ //' | sed 's/ /\t/g' | awk -v scol=$scol '{print $scol "\t" $0}' | sort -g | sed 's/^[^\t]*\t//' | tee -a results_$fields/pairwise_sorted.txt
 fi
 
