@@ -34,7 +34,8 @@ mkdir -p results_$fields
 
 echo "preproc/${fields}field_pyhla_input.tsv"
 
-python ../PyHLA/PyHLA.py --input preproc/${fields}field_pyhla_input.tsv --covar formatted_pheno.tsv --covar-name risk_group,gender,ALL_lineage --digit $digs --assoc --test $atest --model $mdl --adjust Bonferroni --print --out results_$fields/assoc.txt #--combinations DRB1,DQB1 --freq 0.01
+python ../PyHLA/PyHLA.py --input preproc/${fields}field_pyhla_input.tsv --covar preproc/formatted_pheno.tsv --covar-name risk_group,gender,ALL_lineage --digit $digs --assoc --test $atest --model $mdl --adjust Bonferroni --print --out results_$fields/assoc.txt 
+#--combinations DRB1,DQB1 --freq 0.01
 
 if [ ! -f results_$fields/assoc.txt ]; then
     echo "PyHLA was unsuccessful"
