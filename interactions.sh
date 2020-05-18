@@ -14,9 +14,11 @@ let digs=$fields*2
 
 case "$itest" in
     fisher)
+        #pval=P_FET
         pval=P_adj
         ;;
     chisq)
+        #pval=P_Chisq
         pval=P_adj
         ;;
     *)
@@ -26,14 +28,12 @@ esac
 
 mkdir -p results_$fields
 
-echo "preproc/${fields}field_pyhla_input.tsv"
+python ../PyHLA/PyHLA.py --interaction --level allele --input preproc/${fields}field_pyhla_input.tsv --digit $digs --test $itest --model allelic --adjust Bonferroni --print --out results_$fields/interaction_${itest}.txt 
 
-python ../PyHLA/PyHLA.py --interaction --level allele --input preproc/${fields}field_pyhla_input.tsv --digit $digs --test $itest --model allelic --adjust Bonferroni --print --out results_$fields/interaction.txt 
-
-if [ ! -f results_$fields/interaction.txt ]; then
+if [ ! -f results_$fields/interaction_${itest}.txt ]; then
     echo "PyHLA was unsuccessful"
 else
     echo -e "\nfiltering for significant interactions\n\n"
-    cat results_$fields/interaction.txt | tr -s ' ' | sed 's/ /\t/g' | cut -f1-10 | awk '{ if($1=="ID1") print $0; else{ printf "%s\t%s" ,$1,$2; for(i=3; i<=10; i++) if($i < 0.05) printf "\t%d",1; else printf "\t%d",0; printf "\n"}}' | tee results_$fields/interactions_graph.txt
+    cat results_$fields/interaction_${itest}.txt | tr -s ' ' | sed 's/ /\t/g' | cut -f1-10 | awk '{ if($1=="ID1") print $0; else{ printf "%s\t%s" ,$1,$2; for(i=3; i<=10; i++) if($i < 0.05) printf "\t%d",1; else printf "\t%d",0; printf "\n"}}' | tee results_$fields/interaction_${itest}_graph.txt
 fi
 
