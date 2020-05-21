@@ -56,7 +56,8 @@ else
     scol=$(head -n1 results_$fields/assoc_${atest}${covar}.txt | awk -v pcol=$pval '{for(i=1; i<= NF; ++i) if($i == pcol) {print i; break;}}')
     head -n1 results_$fields/assoc_${atest}${covar}.txt | tr -s " " | sed 's/^ //' | sed 's/ /\t/g' | tee results_$fields/assoc_${atest}${covar}_sorted.txt
     tail -n +2 results_$fields/assoc_${atest}${covar}.txt | tr -s " " | sed 's/^ //' | sed 's/ /\t/g' | awk -v scol=$scol '{print $scol "\t" $0}' | sort -g | sed 's/^[^\t]*\t//' | tee -a results_$fields/assoc_${atest}${covar}_sorted.txt
-    labels=$(cat results_$fields/assoc_${atest}${covar}_sorted.txt | awk '{s+=1; if(s>1){ if(s!=2) printf ","; printf "\"%s\" %d",$1,s-2 }}')
+    labels=$(tail -n +2 results_$fields/assoc_${atest}${covar}_sorted.txt | awk '{s+=1; if(s>1) printf ","; printf "\"%s\" %d",$1,s-1 }')
+    cat results_$fields/assoc_${atest}${covar}_sorted.txt | awk -v scol=$scol '{print $1","$scol","$8}' > results_$fields/assoc_${atest}${covar}_plot_data.csv
     echo -e "set term png\nset out \"results_$fields/assoc_${atest}${covar}.png\"\nset xla 'Loci'\nset title 'Results of association test with $atest${ucovar} on $fields fields'\nset yla 'Adjusted P-value (log)'\nset key autotitle columnhead\nunset xtics\nset xtics rotate by -90 ($labels)\nset grid xtics\nplot \"results_$fields/assoc_${atest}${covar}_sorted.txt\" u 0:(-log(\$$scol)):(log(\$8/$freq)+.5) with lp lc 2 pt 4 ps variable title \"\", -log(0.05) with l lc 7 title \"Confidence threshold\"\nset term svg\nset out \"results_$fields/assoc_${atest}${covar}.svg\"\nrep\nset term qt\nset out\nrep" > vis.plt
     gnuplot -p -c vis.plt
     rm vis.plt
